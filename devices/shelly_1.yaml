@@ -1,0 +1,36 @@
+# Device: Shelly 1 Relay
+#
+# This is the ESPHome device template for the Shelly 1.
+
+packages:
+  <<: !include_dir_named ../components/common
+  board: !include ../boards/esp_01.yaml
+
+# Device Specific Config
+
+output:
+  - platform: gpio
+    id: shelly_relay
+    pin: GPIO4
+    # after reboot, keep the relay off, prevents turning lights on after power outage
+    # restore_mode: ALWAYS_OFF
+
+
+light:
+  # Take the output and defines it as a light
+  - platform: binary
+    id: device_light
+    output: shelly_relay 
+
+binary_sensor:
+  - platform: gpio
+    name: "ESPH ${friendly_name} Switch"
+    pin:
+      number: GPIO5
+      #mode: INPUT_PULLUP
+      #inverted: True
+    on_state:
+      then:
+        - light.toggle: device_light
+    internal: true
+    id: device_button

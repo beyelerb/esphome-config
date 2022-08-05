@@ -1,0 +1,92 @@
+# Device: Shelly 1 Relay
+#
+# This is the ESPHome device template for the Shelly 1.
+
+packages:
+  <<: !include_dir_named ../components/common
+  board: !include ../boards/esp_01.yaml
+
+# Device Specific Config
+
+output:
+  - platform: gpio
+    id: shelly_relay
+    pin: GPIO4
+    # after reboot, keep the relay off, prevents turning lights on after power outage
+    # restore_mode: ALWAYS_OFF
+
+
+light:
+  # Take the output and defines it as a light
+  - platform: binary
+    id: device_light
+    output: shelly_relay 
+
+binary_sensor:
+  # Binary sensor for the button press
+  - platform: gpio
+    id: device_button
+    name: "ESPH ${friendly_name} Switch"
+    pin:
+      number: GPIO5
+    internal: true
+    # config for state change of input button
+    on_multi_click:
+      # double click
+      - timing:
+          - ON for at most 1s
+          - OFF for at most 1s
+          - ON for at most 1s
+          - OFF for at least 0.2s
+        then:
+          - if:
+              condition:
+                and:
+                  - wifi.connected:
+                  - api.connected:
+              # send double click event in case wifi and api are connected
+              then:
+                - homeassistant.event:
+                    event: esphome.button_pressed
+                    data:
+                      title: shelly ${system_name} double click
+              # toggle releay in case either wifi or api are not connected
+              else:
+                - light.toggle: device_light
+      # long click
+      - timing:
+          - ON for at least 1.5s
+        then:
+          - if:
+              condition:
+                and:
+                  - wifi.connected:
+                  - api.connected:
+              # send long click event in case wifi and api are connected
+              then:
+                - homeassistant.event:
+                    event: esphome.button_pressed
+                    data:
+                      title: shelly ${system_name} long  click
+              # toggle relay in case either wifi or api are not connected
+              else:
+                - light.toggle: device_light
+      # single click
+      - timing:
+          - ON for at most 1s
+          - OFF for at least 0.5s
+        then:
+          - if:
+              condition:
+                and:
+                  - wifi.connected:
+                  - api.connected:
+              # send single click event in case wifi and api are connected
+              then:
+                - homeassistant.event:
+                    event: esphome.button_pressed
+                    data:
+                      title: shelly ${system_name} short click
+              # toggle relay in case either wifi or api are not connected
+              else:
+                - light.toggle: device_light

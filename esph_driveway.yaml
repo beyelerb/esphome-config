@@ -1,0 +1,14 @@
+---
+# Driveway Light Switch
+#
+# This Shelly 1PM relay controls the driveway light switch. It is automated and hooked
+# up to a modified rocker switch to make it a momentary switch.
+#
+substitutions:
+  system_name: driveway-light
+  friendly_name: Driveway Light
+  device_description: "Shelly 1 automating driveway light."
+
+packages:
+  device: !include devices/shelly_1.yaml
+

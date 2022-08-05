@@ -1,6 +1,7 @@
 .gitignore
 
 /.esphome/
+/firmware/
 /assets/fonts/*.ttf
 /assets/*.png
 

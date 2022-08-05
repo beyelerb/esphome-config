@@ -1,0 +1,15 @@
+---
+# Game Closet Light Switch
+#
+# This Shelly 1 relay controls the game closet light switch. There is
+# a manual switch installed, but it should be automated via a door
+# opening sensor.
+#
+substitutions:
+  system_name: gamecloset-light
+  friendly_name: Game Closet Light
+  device_description: "Shelly 1 automating gamecloset light."
+
+packages:
+  device: !include devices/shelly_1.yaml
+

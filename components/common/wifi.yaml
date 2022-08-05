@@ -6,15 +6,18 @@
 # https://esphome.io/components/wifi.html
 #
 substitutions:
-  wifi_ssid: !secret wifi_vlan1_ssid
-  wifi_password: !secret wifi_vlan1_password
+  wifi_ssid: !secret wifi_iot_vlan_ssid
+  wifi_password: !secret wifi_iot_vlan_password
   wifi_ap_password: !secret fallback_ssid_password
+  wifi_net_domain: !secret wifi_domain
 
 wifi:
   id: component_wifi
   ssid: "${wifi_ssid}"
   password: "${wifi_password}"
+  domain: "${wifi_net_domain}"
   reboot_timeout: 10min
+  fast_connect: true
   ap:
     ssid: "${friendly_name} AP"
     password: "${wifi_ap_password}"
@@ -27,3 +30,4 @@ sensor:
 
 text_sensor:
   - <<: !include ../text_sensors/wifi_info.yaml    
+
